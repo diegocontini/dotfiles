@@ -1,0 +1,26 @@
+config:
+  backup: true
+  create: true
+  dotpath: .
+  link_dotfile_default: absolute
+  template_dotfile_default: false
+
+dotfiles:
+  zshrc:
+    src: zsh/.zshrc
+    dst: ~/.zshrc
+  wezterm_config:
+    src: wezterm/wezterm.lua
+    dst: ~/.config/wezterm/wezterm.lua
+  wezterm_wallpaper:
+    src: wezterm/wallpaper.png
+    dst: ~/.config/wezterm/wallpaper.png
+  starship_config:
+    src: starship/starship.toml
+    dst: ~/.config/starship.toml
+
+profiles:
+  linux:
+    dotfiles: [zshrc, wezterm_config, wezterm_wallpaper, starship_config]
+  macos:
+    dotfiles: [zshrc, wezterm_config, wezterm_wallpaper, starship_config]

@@ -17,6 +17,7 @@ install_system_tools() {
       done
       ((${#missing[@]} == 0)) || brew install "${missing[@]}"
       brew list --cask wezterm >/dev/null 2>&1 || brew install --cask wezterm
+      brew list --cask font-fira-code >/dev/null 2>&1 || brew install --cask font-fira-code
       ;;
     Linux)
       if command -v apt-get >/dev/null 2>&1; then
@@ -35,6 +36,9 @@ install_system_tools() {
       if ! command -v wezterm >/dev/null 2>&1; then
         echo 'WezTerm is not installed. Install it using the official Linux instructions: https://wezterm.org/install/linux.html'
       fi
+      if [[ "$(fc-match -f '%{family}' 'Fira Code' 2>/dev/null)" != *'Fira Code'* ]]; then
+        sudo apt-get install -y fonts-firacode
+      fi
       ;;
     *)
       echo "Unsupported operating system: $(uname -s)" >&2
@@ -52,15 +56,16 @@ install_oh_my_zsh() {
   fi
 }
 
-backup_and_link() {
-  local source="$1" target="$2"
-  mkdir -p "$(dirname "$target")"
-  if [[ -e "$target" && ! -L "$target" ]]; then
-    mv "$target" "$target.backup.$(date +%Y%m%d%H%M%S)"
-  elif [[ -L "$target" ]]; then
-    rm "$target"
+install_dotdrop() {
+  if command -v dotdrop >/dev/null 2>&1; then
+    return
   fi
-  ln -s "$source" "$target"
+  if command -v brew >/dev/null 2>&1; then
+    brew install dotdrop
+  else
+    sudo apt-get update
+    sudo apt-get install -y dotdrop
+  fi
 }
 
 install_starship() {
@@ -90,17 +95,19 @@ clone_plugin() {
 install_system_tools
 install_oh_my_zsh
 install_starship
+install_dotdrop
 clone_plugin zsh-users/zsh-autosuggestions zsh-autosuggestions
 clone_plugin zsh-users/zsh-syntax-highlighting zsh-syntax-highlighting
 
-backup_and_link "$ROOT/zsh/.zshrc" "$HOME/.zshrc"
-backup_and_link "$ROOT/wezterm/wezterm.lua" "$HOME/.config/wezterm/wezterm.lua"
-backup_and_link "$ROOT/wezterm/wallpaper.png" "$HOME/.config/wezterm/wallpaper.png"
-backup_and_link "$ROOT/starship/starship.toml" "$HOME/.config/starship.toml"
+case "$(uname -s)" in
+  Darwin) profile=macos ;;
+  Linux) profile=linux ;;
+esac
+dotdrop install --cfg "$ROOT/config.yaml" --profile "$profile" --no-prompt
 if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
   if ! grep -Fq 'export PATH="$HOME/.local/bin:$PATH"' "$HOME/.zshrc.local" 2>/dev/null; then
     printf '\n# User-installed command line tools\nexport PATH="$HOME/.local/bin:$PATH"\n' >> "$HOME/.zshrc.local"
   fi
 fi
-printf 'Linked dotfiles from %s\n' "$ROOT"
+printf 'Applied dotfiles from %s with Dotdrop\n' "$ROOT"
 echo 'Start a new Zsh session to apply the setup.'
