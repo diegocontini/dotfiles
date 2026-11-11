@@ -1,53 +1,38 @@
 # Dotfiles
 
-Portable Zsh and WezTerm configuration for Linux Mint and macOS.
+Configura Zsh com Oh My Zsh e Starship, além do WezTerm com Fira Code, Catppuccin Mocha e wallpaper. O Dotdrop cria os links para os arquivos do repositório e guarda backup de configurações existentes.
 
-## Contents
+## Preparar o sistema
 
-- `zsh/.zshrc`: Oh My Zsh, Starship and common plugins.
-- `starship/starship.toml`: shared Starship prompt settings.
-- `wezterm/wallpaper.png`: terminal background image.
-- `wezterm/wezterm.lua`: terminal appearance and cross-platform settings.
-- `config.yaml`: Dotdrop mapping and Linux/macOS profiles.
-
-## Install
-
-Clone this repository to `~/git/dotfiles`. Install Dotdrop, Zsh, Oh My Zsh, Starship, Fira Code, WezTerm, and the two Zsh plugins once on each machine. On macOS with Homebrew:
+**macOS** (com Homebrew):
 
 ```sh
-brew install dotdrop zsh starship
+brew install dotdrop starship
 brew install --cask wezterm font-fira-code
 ```
 
-On Linux Mint with Homebrew:
+**Linux Mint** (com Homebrew):
 
 ```sh
 sudo apt install zsh fonts-firacode
 brew install dotdrop starship
 ```
 
-Install WezTerm from its [official Linux instructions](https://wezterm.org/install/linux.html) if needed.
+No Linux, instale também o [WezTerm](https://wezterm.org/install/linux.html) se ainda não estiver instalado.
 
-Install Oh My Zsh with its [official instructions](https://ohmyz.sh/#install), then clone the two plugins into its custom plugin directory:
-
-```sh
-git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
-git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting"
-```
-
-Apply the configuration with Dotdrop from the repository root:
+## Clonar e aplicar
 
 ```sh
-dotdrop install --cfg config.yaml --profile macos  # use linux on Linux Mint
+mkdir -p ~/git
+git clone git@github.com:diegocontini/dotfiles.git ~/git/dotfiles
+cd ~/git/dotfiles
+
+test -d ~/.oh-my-zsh || RUNZSH=no CHSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+test -d ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions || git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+test -d ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting || git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+
+# Mac: use macos. Linux Mint: troque por linux.
+dotdrop install --cfg config.yaml --profile macos
 ```
 
-Dotdrop creates absolute symlinks and backs up existing files that differ. Open a new shell to use the setup. This repo does not include machine-specific secrets or API keys.
-
-## Updating
-
-```sh
-git pull
-dotdrop install --cfg config.yaml --profile linux  # use macos on macOS
-```
-
-Configuration changes take effect in new shell sessions. WezTerm reloads its Lua config automatically when possible.
+Abra uma nova sessão do Zsh após aplicar.
