@@ -4,6 +4,8 @@ Configura Zsh com Oh My Zsh e Starship, além do WezTerm com Fira Code, Catppucc
 
 ## Preparar o sistema
 
+Instale também o **Starship**, usado como prompt do Zsh. O Dotdrop aplica o arquivo `~/.config/starship.toml`, mas não instala o programa. Os comandos abaixo já incluem o Starship; se você já instalou as outras dependências, execute `brew install starship`.
+
 **macOS** (com Homebrew):
 
 ```sh
