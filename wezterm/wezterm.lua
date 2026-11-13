@@ -20,6 +20,7 @@ config.scrollback_lines = 10000
 config.adjust_window_size_when_changing_font_size = false
 
 config.keys = {
+  { key = 'Enter', mods = 'SHIFT', action = wezterm.action.SendString '\x0a' },
   { key = 'd', mods = 'CTRL|SHIFT', action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' } },
   { key = 'd', mods = 'CTRL|ALT', action = wezterm.action.SplitVertical { domain = 'CurrentPaneDomain' } },
   { key = 'LeftArrow', mods = 'CTRL|SHIFT', action = wezterm.action.ActivatePaneDirection 'Left' },
